@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pantalla 1 - Dropdown</title>
+    </head>
+    <body>
+        <h1>Pantalla 1: Selecciona una opción</h1>
+
+        <label for="options">Selecciona una opción:</label>
+        <select id="options">
+            <option value="1">op 1</option>
+            <option value="2">op 2</option>
+            <option value="3">op 3</option>
+        </select>
+
+        <br><br>
+
+        <button onclick="goToForm()">Siguiente</button>
+
+        <script>
+            function goToForm() {
+            window.location.href = 'formulario.html'; // Cambia de pantalla al formulario
+            }
+        </script>
+    </body>
+</html>
