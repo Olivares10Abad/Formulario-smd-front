@@ -1,27 +1,195 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
+<head>
+    <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario</title>
-    </head>
-    <body>
-        <h1>Formulario</h1>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="src/Logo.png" alt="Star Médica Logo">
+        </div>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/StarMedica/"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/1a560d12-c8d7-40cb-9e90-9df36933fdfa.png" alt="Facebook"></a>
+            <a href="https://www.instagram.com/star.medica"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/0e6fddf1-c205-4752-ad42-e9dc03c83dea.png" alt="Instagram"></a>
+            <a href="https://www.youtube.com/channel/UCOcoolJRJawN0iODoHcFjxQ"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/287abafd-6473-47a9-b05b-30526dc265fd.png" alt="YouTube"></a>
+            <a href="https://twitter.com/Star_Medica"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/a3b47106-a80a-401f-8435-6b6398001c4f.png" alt="X"></a>
+            <a href="https://www.linkedin.com/company/star-medica-gsm/mycompany/"><img src="https://image.s4.exct.net/lib/fe911573736c007d7d/m/2/df45eec7-2b51-455c-a5e1-9098496d6013.png" alt="LinkedIn"></a>
+        </div>
+    </header>
+    <div>
+        <img class="img-body" src="src/img-maternidad.png" alt="">
+    </div>
+    <br>
+    <div class="container">
+        <table id="paquetes-table">
+            <thead id="table-head">
+                <tr></tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+    <div class="text-info"></div>
 
-        <form>
-            <label for="input1">Campo 1:</label>
-            <input type="text" id="input1" name="input1"><br><br>
+    <h1>¿Quieres personalizar tu experienia de maternidad?</h1>
+    <p>Déjanos tus datos o contáctanos</p>
 
-            <label for="input2">Campo 2:</label>
-            <input type="text" id="input2" name="input2"><br><br>
+    <form id="contact-form">
+        <input type="text" id="nombre" name="nombres" placeholder="Nombre" required><br><br>
+        <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos" required><br><br>
+        <input type="email" id="correo" name="email" placeholder="Correo Electronico" required><br><br>
+        <input type="tel" id="telefono" name="numero" placeholder="Telefono" required><br><br>
 
-            <label for="input3">Campo 3:</label>
-            <input type="text" id="input3" name="input3"><br><br>
+        <input type="hidden" id="metodo" name="metodo" value="">
 
-            <label for="input4">Campo 4:</label>
-            <input type="text" id="input4" name="input4"><br><br>
+        <div class="button-container">
+            <button type="submit" class="buttonen" onclick="setMethod('formulario')">ENVIAR</button>
+            <p>o</p>
+            <button type="submit" class="buttonwhat" onclick="setMethod('whatsapp')">WHATSAPP</button>
+        </div>
+    </form>
 
-            <button type="submit">Enviar</button>
-        </form>
-    </body>
+    <footer>
+        <script>
+            // Recuperar los datos del localStorage
+            const hospital = JSON.parse(localStorage.getItem('hospital'));
+
+            if (hospital) {
+                console.log('Hospital seleccionado:', hospital);
+
+                // Crear el footer dinámicamente
+                const footer = document.createElement('footer');
+                footer.innerHTML = `
+                    <div class="contact-info">
+                        <p>Tel. <a href="tel:${hospital.telefono}">${hospital.telefono}</a></p>
+                        <p><strong>${hospital.nombre}</strong></p>
+                        <p>${hospital.direccion}</p>
+                        <a href="${hospital.mapsuri}" target="_blank">
+                            <img src="" alt="Google Maps" width="30">
+                        </a>
+                    </div>
+                `;
+                document.body.appendChild(footer);
+            } else {
+                console.error('No se encontraron datos del hospital.');
+            }
+        </script>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const apiUrl = `https://formullario-smd-back.onrender.com/hospitales/${hospital.id}/paquetes`;
+
+            async function obtenerPaquetes() {
+                try {
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+                    renderizarTabla(data); // Llamamos a la función de renderizado con los datos obtenidos
+                } catch (error) {
+                    console.error("Error al obtener los datos:", error);
+                }
+            }
+
+            function renderizarTabla(paquetes) {
+                const tableHead = document.getElementById("table-head");
+                const tableBody = document.getElementById("table-body");
+
+                const headerRow = document.createElement("tr");
+                const firstHeaderCell = document.createElement("th");
+                firstHeaderCell.textContent = "Características";
+                headerRow.appendChild(firstHeaderCell);
+
+                paquetes.forEach(paquete => {
+                    const th = document.createElement("th");
+                    th.textContent = paquete.nombre_paquete; // Usamos el nombre del paquete para los encabezados
+                    headerRow.appendChild(th);
+                });
+
+                tableHead.appendChild(headerRow);
+
+                const caracteristicas = [
+                    { campo: "habitacion_estandar", nombre: "Habitación Estándar" },
+                    { campo: "junior_suite", nombre: "Junior Suite" },
+                    { campo: "star_suite", nombre: "Star Suite" },
+                    { campo: "kit_regalo", nombre: "Kit de Regalo para Mamá y Bebé" },
+                    { campo: "grupo_sanguineo", nombre: "Grupo Sanguíneo y Factor RH" },
+                    { campo: "asesoria_lactancia", nombre: "Asesoría sobre Lactancia y Baño del RN" }
+                ];
+
+                caracteristicas.forEach(caracteristica => {
+                    const row = document.createElement("tr");
+                    const caracteristicaCell = document.createElement("td");
+                    caracteristicaCell.textContent = caracteristica.nombre;
+                    row.appendChild(caracteristicaCell);
+
+                    paquetes.forEach(paquete => {
+                        const cell = document.createElement("td");
+                        if (paquete[caracteristica.campo]) {
+                            cell.innerHTML = '<span class="check-icon">&#10004;</span>'; // Palomita si es true
+                        } else {
+                            cell.innerHTML = ''; // Vacía si es false
+                        }
+                        row.appendChild(cell);
+                    });
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+            obtenerPaquetes();
+        });
+
+        // Función para actualizar el método seleccionado
+        function setMethod(metodo) {
+            const metodoInput = document.getElementById('metodo');
+            if (metodoInput) {
+                metodoInput.value = metodo;
+            } else {
+                console.error('No se pudo encontrar el campo oculto "metodo".');
+            }
+        }
+
+        // Manejar el envío del formulario
+        document.getElementById('contact-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const metodoInput = document.getElementById('metodo').value;
+
+            const data = {
+                nombres: formData.get('nombres'),
+                apellidos: formData.get('apellidos'),
+                email: formData.get('email'),
+                numero: formData.get('numero'),
+                id_hospital: hospital.id,
+                contactado: false,
+                metodo: metodoInput
+            };
+
+            try {
+                const response = await fetch('https://formullario-smd-back.onrender.com/formularios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Datos enviados con éxito:', result);
+                    alert('Formulario enviado con éxito!');
+                } else {
+                    console.error('Error al enviar el formulario:', response.statusText);
+                    alert('Error al enviar el formulario. Intente de nuevo.');
+                }
+            } catch (error) {
+                console.error('Error de red:', error);
+                alert('Error de red. Intente de nuevo más tarde.');
+            }
+        });
+    </script>
+</body>
 </html>

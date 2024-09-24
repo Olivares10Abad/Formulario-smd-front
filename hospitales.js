@@ -18,8 +18,11 @@ async function cargarHospitales() {
 
         hospitales.forEach(hospital => {
             const option = document.createElement('option');
-            option.value = hospital.id;
-            option.textContent = hospital.nombre;
+            option.id = hospital.id;
+            option.nombre = hospital.nombre;
+            option.direccion = hospital.direccion;
+            option.telefono = hospital.telefono;
+            option.mapsuri = hospital.mapsuri;
             dropdown.appendChild(option);
         });
     } catch (error) {
