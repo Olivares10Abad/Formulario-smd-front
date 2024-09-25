@@ -67,7 +67,7 @@
                         <p><strong>${hospital.nombre}</strong></p>
                         <p>${hospital.direccion}</p>
                         <a href="${hospital.mapsuri}" target="_blank">
-                            <img src="" alt="Google Maps" width="30">
+                            <img src="https://image.mail.starmedica.com/lib/fe2911737164047d7c1d78/m/1/19dd5dfd-dc0d-4028-ae29-680c48ec9bf8.png" alt="Google Maps" >
                         </a>
                     </div>
                 `;
@@ -181,6 +181,20 @@
                     const result = await response.json();
                     console.log('Datos enviados con éxito:', result);
                     alert('Formulario enviado con éxito!');
+
+                    // Crear un archivo .txt con el contenido de 'result'
+                    const fileContent = JSON.stringify(result, null, 2); // Convertimos el objeto result a una cadena JSON
+                    const blob = new Blob([fileContent], { type: 'text/plain' });
+                    const fileUrl = URL.createObjectURL(blob);
+
+                    // Crear un enlace temporal para descargar el archivo
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = fileUrl;
+                    downloadLink.download = 'resultado.txt'; // Nombre del archivo a descargar
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink); // Limpiar el enlace temporal
+
                 } else {
                     console.error('Error al enviar el formulario:', response.statusText);
                     alert('Error al enviar el formulario. Intente de nuevo.');
